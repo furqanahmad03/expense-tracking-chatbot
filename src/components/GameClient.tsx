@@ -504,7 +504,7 @@ export default function GameClient() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  💰 What's your gross monthly income?
+                  💰 What&apos;s your gross monthly income?
                 </label>
                 <Input
                   type="number"
@@ -527,7 +527,7 @@ export default function GameClient() {
                     Gross Monthly Income: ${grossSalary.toLocaleString()}
                   </p>
                   <p className="text-blue-700 dark:text-blue-300">
-                    We'll calculate your tax rate based on your location in the next step.
+                    We&apos;ll calculate your tax rate based on your location in the next step.
                   </p>
                 </div>
               )}
@@ -687,7 +687,7 @@ export default function GameClient() {
                     </h5>
                     <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
                       <li>• Housing costs are automatically deducted from your budget</li>
-                      <li>• You'll allocate the remaining funds to other categories</li>
+                      <li>• You&apos;ll allocate the remaining funds to other categories</li>
                       <li>• Random events will occur throughout the simulation</li>
                     </ul>
                   </div>
@@ -1379,7 +1379,7 @@ export default function GameClient() {
                 🎉 Congratulations!
               </CardTitle>
               <CardDescription className="text-lg">
-                You've completed the 6-month budget simulation!
+                You&apos;ve completed the 6-month budget simulation!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

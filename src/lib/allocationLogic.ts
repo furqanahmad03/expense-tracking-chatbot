@@ -7,6 +7,18 @@ export interface AllocationState {
   savingsExhausted: boolean
 }
 
+export interface IterationHistoryItem {
+  iteration: number
+  balance: number
+  allocations: Record<string, { amount: number; emoji: string }>
+  debt: number
+  savings: number
+  randomEvent?: {
+    message: string
+    adjustment: number
+  }
+}
+
 export interface GameState {
   stage: 'salary' | 'location' | 'budget_allocation' | 'summary' | 'game_over'
   grossMonthlySalary: number
@@ -24,7 +36,7 @@ export interface GameState {
   housingCost: number
   utilityCost: number
   taxRate: number
-  iterationHistory: any[]
+  iterationHistory: IterationHistoryItem[]
 }
 
 export interface BudgetAllocation {

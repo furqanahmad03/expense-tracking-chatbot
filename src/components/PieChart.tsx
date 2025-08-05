@@ -71,7 +71,7 @@ export default function PieChart({ data, title = "Budget Allocation" }: PieChart
   }
 
   // Handle mouse events for tooltip
-  const handleMouseEnter = (slice: typeof slices[0], event: React.MouseEvent) => {
+  const handleMouseEnter = (slice: typeof slices[0], event: React.MouseEvent<SVGPathElement>) => {
     const rect = (event.currentTarget as SVGPathElement).getBoundingClientRect()
     const containerRect = (event.currentTarget.closest('.pie-chart-container') as HTMLElement)?.getBoundingClientRect()
     
