@@ -47,10 +47,10 @@ export default function PieChart({ data, title }: PieChartProps) {
     return slice
   })
 
-  // SVG dimensions
-  const size = 300
+  // SVG dimensions - responsive
+  const size = 280
   const center = size / 2
-  const radius = 120
+  const radius = 100
 
   // Function to create SVG path for pie slice
   const createPath = (startAngle: number, endAngle: number) => {
@@ -103,8 +103,13 @@ export default function PieChart({ data, title }: PieChartProps) {
       
       <div className="flex flex-col lg:flex-row items-center gap-6">
         {/* Pie Chart SVG */}
-        <div className="flex-shrink-0 relative">
-          <svg width={size} height={size} className="drop-shadow-sm">
+        <div className="flex-shrink-0 relative w-full max-w-xs mx-auto lg:mx-0">
+          <svg 
+            width={size} 
+            height={size} 
+            viewBox={`0 0 ${size} ${size}`}
+            className="drop-shadow-sm w-full h-auto max-w-full"
+          >
             {slices.map((slice, index) => (
               <g key={index}>
                 <path
@@ -151,7 +156,7 @@ export default function PieChart({ data, title }: PieChartProps) {
         </div>
 
         {/* Legend */}
-        <div className="flex-1 space-y-2 max-h-64 overflow-y-auto">
+        <div className="flex-1 space-y-2 max-h-64 overflow-y-scroll w-full lg:w-auto">
           {slices.map((slice, index) => (
             <div 
               key={index} 
@@ -191,7 +196,7 @@ export default function PieChart({ data, title }: PieChartProps) {
       </div>
 
       {/* Summary Stats */}
-      <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-4 text-center">
+      <div className="mt-4 pt-4 border-t grid grid-cols-2 gap-4 text-center max-w-xs mx-auto lg:max-w-none">
         <div>
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {data.length}

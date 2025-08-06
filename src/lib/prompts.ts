@@ -15,11 +15,21 @@ export const EXPERT_ADVICE_PROMPT = (
   monthlySalary: number, 
   allocations: Record<string, { amount: number; emoji: string }>, 
   iteration: number, 
-  isGameOver: boolean = false
+  isGameOver: boolean = false,
+  locale: string = 'en'
 ) => {
   const allocationText = Object.entries(allocations)
     .map(([cat, data]) => `- ${cat}: $${data.amount.toLocaleString()}`)
     .join('\n')
+
+  const languageNames = {
+    'en': 'English',
+    'es': 'Spanish', 
+    'pt': 'Portuguese'
+  }
+  
+  const responseLanguage = languageNames[locale as keyof typeof languageNames] || 'English'
+  const languageInstruction = `Please respond in ${responseLanguage}.`
 
   if (isGameOver) {
     return `As a professional cost of living expert, analyze this failed budget allocation for someone living in ${location} 
@@ -33,7 +43,7 @@ Please provide:
 2. 3 specific suggestions for better budget management next time
 3. Key lessons to learn from this experience
 
-Keep the response encouraging and constructive.`
+Keep the response encouraging and constructive. ${languageInstruction}`
   } else {
     return `As a professional cost of living expert, analyze this budget allocation for someone living in ${location} 
 with a monthly salary of $${monthlySalary.toLocaleString()}. This is iteration ${iteration} of their 6-month budget planning.
@@ -46,7 +56,7 @@ Please provide:
 2. 2-3 specific suggestions for improvement based on typical costs in ${location}
 3. Any potential risks or opportunities in their current allocation
 
-Keep the response concise and practical.`
+Keep the response concise and practical. ${languageInstruction}`
   }
 }
 

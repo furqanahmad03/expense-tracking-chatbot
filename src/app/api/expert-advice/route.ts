@@ -13,7 +13,8 @@ export async function POST(request: NextRequest) {
       monthlySalary, 
       allocations, 
       iteration, 
-      isGameOver = false 
+      isGameOver = false,
+      locale = 'en'
     } = await request.json()
 
     if (!location || !monthlySalary || !allocations || !iteration) {
@@ -35,7 +36,8 @@ export async function POST(request: NextRequest) {
       monthlySalary, 
       allocations, 
       iteration, 
-      isGameOver
+      isGameOver,
+      locale
     )
 
     const response = await openai.chat.completions.create({

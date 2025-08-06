@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo, useRef } from "react"
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -82,7 +82,8 @@ const getExpertAdvice = async (
   monthlySalary: number,
   allocations: Record<string, { amount: number; emoji: string }>,
   iteration: number,
-  isGameOver: boolean = false
+  isGameOver: boolean = false,
+  locale: string = 'en'
 ) => {
   try {
     const response = await fetch('/api/expert-advice', {
@@ -95,7 +96,8 @@ const getExpertAdvice = async (
         monthlySalary,
         allocations,
         iteration,
-        isGameOver
+        isGameOver,
+        locale
       }),
     })
 
@@ -114,6 +116,7 @@ const getExpertAdvice = async (
 
 export default function GameClient() {
   const t = useTranslations();
+  const locale = useLocale();
   const [mounted, setMounted] = useState(false)
 
   // Get translated categories
@@ -498,7 +501,8 @@ export default function GameClient() {
         gameState.monthlySalary,
         gameState.allocations,
         gameState.iteration,
-        isGameOver
+        isGameOver,
+        locale
       )
       setExpertAdvice(advice)
     } catch (error) {
