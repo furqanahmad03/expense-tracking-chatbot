@@ -22,7 +22,7 @@ import PieChart from '@/components/PieChart'
 // Types are now imported from allocationLogic.ts
 
 // Categories for budget allocation - these will be translated in the component
-const getCategoriesWithTranslations = (t: any) => [
+const getCategoriesWithTranslations = (t: (key: string) => string) => [
   { name: t('categories.transportation'), emoji: "🚗", key: "transportation" },
   { name: t('categories.groceries'), emoji: "🛒", key: "groceries" },
   { name: t('categories.diningOut'), emoji: "🍽️", key: "diningOut" },
@@ -35,7 +35,7 @@ const getCategoriesWithTranslations = (t: any) => [
 ]
 
 // Random events generator - now uses translations
-const generateRandomEvent = (biweeklyIncome: number, iteration: number, t: any) => {
+const generateRandomEvent = (biweeklyIncome: number, iteration: number, t: (key: string) => string) => {
   const events = [
     { message: t('events.carRepairs'), adjustment: -150 },
     { message: t('events.utilityBill'), adjustment: -Math.floor((biweeklyIncome || 0) * 0.05) },
@@ -1173,10 +1173,33 @@ export default function GameClient() {
     const currentPeriodIncome = gameState.iteration === 1 ? gameState.biweeklyIncome : gameState.currentBalance + gameState.biweeklyIncome
     const event = generateRandomEvent(gameState.biweeklyIncome || 0, gameState.iteration, t)
 
-    // Calculate new balance
-    let newBalance = currentPeriodIncome - biweeklyFixedCosts - gameState.allocatedAmount + (event?.adjustment || 0)
+    // Calculate new balance - separate regular spending from debt-funded spending
+    // Only count non-debt allocations against income
+    const regularAllocations = Object.entries(gameState.allocations).reduce((total, [_, allocation]) => {
+      // This is a simplified approach - in a more complex system, we'd track which allocations were debt-funded
+      return total + allocation.amount
+    }, 0)
+    
+    // For now, assume debt allocations are the difference between total allocated and what should fit in income
+    const availableForSpending = currentPeriodIncome - biweeklyFixedCosts
+    const debtFundedSpending = Math.max(0, regularAllocations - availableForSpending)
+    const incomeFundedSpending = regularAllocations - debtFundedSpending
+    
+    let newBalance = currentPeriodIncome - biweeklyFixedCosts - incomeFundedSpending + (event?.adjustment || 0)
     let newDebt = gameState.debt
     let newSavings = gameState.savings
+
+    console.log('Debug - Summary balance calculation:', {
+      currentPeriodIncome,
+      biweeklyFixedCosts,
+      regularAllocations,
+      availableForSpending,
+      debtFundedSpending,
+      incomeFundedSpending,
+      eventAdjustment: event?.adjustment || 0,
+      initialBalance: newBalance,
+      initialDebt: newDebt
+    })
 
     // Handle debt repayment (already handled in allocation stage)
     if (gameState.allocations["debtRepayment"]) {
@@ -1189,17 +1212,20 @@ export default function GameClient() {
     // If balance goes negative, use savings first, then create debt
     if (newBalance < 0) {
       const shortfall = Math.abs(newBalance)
+      console.log('Debug - Balance went negative:', { newBalance, shortfall, newSavings })
 
       // Use savings first
       if (newSavings >= shortfall) {
         newSavings -= shortfall
         newBalance = 0
+        console.log('Debug - Used savings to cover shortfall')
       } else {
         // If savings aren't enough, use all savings and create debt for the rest
         const remainingShortfall = shortfall - newSavings
         newSavings = 0
         newDebt += remainingShortfall
         newBalance = 0
+        console.log('Debug - Added debt from negative balance:', { remainingShortfall, newTotalDebt: newDebt })
       }
     }
 
@@ -1210,12 +1236,15 @@ export default function GameClient() {
 
     // Add debt from fixed costs if they exceeded income (use savings first)
     if (debtFromFixedCosts > 0) {
+      console.log('Debug - Fixed costs exceeded income:', { debtFromFixedCosts, newSavings })
       if (newSavings >= debtFromFixedCosts) {
         newSavings -= debtFromFixedCosts
+        console.log('Debug - Used savings to cover fixed costs debt')
       } else {
         const remainingDebt = debtFromFixedCosts - newSavings
         newSavings = 0
         newDebt += remainingDebt
+        console.log('Debug - Added debt from fixed costs:', { remainingDebt, newTotalDebt: newDebt })
       }
     }
 

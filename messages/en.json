@@ -24,8 +24,7 @@
     "category": "Category",
     "amount": "Amount",
     "fromSavings": "from savings",
-    "fromDebt": "from debt",
-    "cancel": "Cancel"
+    "fromDebt": "from debt"
   },
   "app": {
     "title": "Cost of Living Game",
@@ -233,8 +232,6 @@
     "finalResults": "🏆 Final Results",
     "locationLabel": "Location:",
     "startingSalary": "Starting Salary:",
-    "finalBalance": "Final Balance:",
-    "finalSavings": "Final Savings:",
     "gettingFinalAdvice": "Getting final advice...",
     "getFinalAnalysisDescription": "Get final analysis of your 6-month budget journey",
     "getFinalAdvice": "Get Final Advice"

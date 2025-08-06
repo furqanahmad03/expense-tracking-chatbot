@@ -24,8 +24,7 @@
     "category": "Categoría",
     "amount": "Cantidad",
     "fromSavings": "de ahorros",
-    "fromDebt": "de deuda",
-    "cancel": "Cancelar"
+    "fromDebt": "de deuda"
   },
   "app": {
     "title": "Juego del Costo de Vida",
@@ -233,8 +232,6 @@
     "finalResults": "🏆 Resultados Finales",
     "locationLabel": "Ubicación:",
     "startingSalary": "Salario Inicial:",
-    "finalBalance": "Balance Final:",
-    "finalSavings": "Ahorros Finales:",
     "gettingFinalAdvice": "Obteniendo consejo final...",
     "getFinalAnalysisDescription": "Obtén el análisis final de tu viaje de presupuesto de 6 meses",
     "getFinalAdvice": "Obtener Consejo Final"
