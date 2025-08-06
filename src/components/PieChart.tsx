@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface PieChartData {
   label: string
@@ -22,8 +23,12 @@ interface TooltipData {
   y: number
 }
 
-export default function PieChart({ data, title = "Budget Allocation" }: PieChartProps) {
+export default function PieChart({ data, title }: PieChartProps) {
+  const t = useTranslations()
   const [tooltip, setTooltip] = useState<TooltipData | null>(null)
+  
+  // Use translated title or fallback
+  const chartTitle = title || t('summary.pieChartTitle')
   // Calculate total for percentages
   const total = data.reduce((sum, item) => sum + item.value, 0)
   
@@ -94,7 +99,7 @@ export default function PieChart({ data, title = "Budget Allocation" }: PieChart
 
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg border pie-chart-container relative">
-      <h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>
+      <h3 className="text-lg font-semibold mb-4 text-center">{chartTitle}</h3>
       
       <div className="flex flex-col lg:flex-row items-center gap-6">
         {/* Pie Chart SVG */}
@@ -132,7 +137,7 @@ export default function PieChart({ data, title = "Budget Allocation" }: PieChart
               textAnchor="middle"
               className="text-sm font-semibold fill-gray-700 dark:fill-gray-300"
             >
-              Total
+              {t('common.total')}
             </text>
             <text
               x={center}
@@ -191,13 +196,13 @@ export default function PieChart({ data, title = "Budget Allocation" }: PieChart
           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
             {data.length}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">Categories</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{t('common.categories')}</div>
         </div>
         <div>
           <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             ${(total / data.length).toFixed(0)}
           </div>
-          <div className="text-xs text-gray-500 dark:text-gray-400">Avg/Category</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">{t('common.avgPerCategory')}</div>
         </div>
       </div>
 
@@ -220,7 +225,7 @@ export default function PieChart({ data, title = "Budget Allocation" }: PieChart
           </div>
           <div className="text-xs text-gray-300">
             <div>${tooltip.value.toLocaleString()}</div>
-            <div>{tooltip.percentage.toFixed(1)}% of total</div>
+            <div>{tooltip.percentage.toFixed(1)}% {t('common.ofTotal')}</div>
           </div>
           {/* Tooltip arrow */}
           <div 

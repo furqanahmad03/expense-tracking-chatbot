@@ -139,6 +139,12 @@ export function handleDebtAllocation(
   const newSavings = gameState.savings
   const newDebt = gameState.debt + debtAmount
 
+  console.log('Debug - handleDebtAllocation:', {
+    newGameState,
+    newSavings,
+    newDebt
+  });
+
   return { newGameState, newSavings, newDebt }
 }
 
@@ -146,28 +152,50 @@ export function handleDebtAllocation(
 export function determineAllocationMode(
   gameState: GameState,
   remainingToAllocate: number,
-  savingsExhausted: boolean = false
+  debtUsedThisRound: number,
+  savingsExhausted: boolean = false,
 ): 'normal' | 'savings' | 'debt' | null {
+  console.log('Debug - determineAllocationMode:', {
+    remainingToAllocate,
+    savingsExhausted,
+    debtUsedThisRound,
+    gameStateSavings: gameState.savings,
+    monthlySalary: gameState.monthlySalary
+  })
+
   // If user has money to allocate, use normal mode
   if (remainingToAllocate > 0) {
+    console.log('Debug - Returning normal mode')
     return 'normal'
   }
 
   // If no money left but has savings and savings are not exhausted, use savings mode
   if (gameState.savings > 0 && !savingsExhausted) {
+    console.log('Debug - Returning savings mode')
     return 'savings'
   }
 
-  // If no money and (no savings OR savings exhausted), use debt mode (up to 1/2 monthly salary)
-  const availableDebtAllocation = gameState.monthlySalary / 2
+  // If no money and (no savings OR savings exhausted), use debt mode (up to 1/4 monthly salary per round)
+  const maxDebtAllocation = gameState.monthlySalary / 4
+  const availableDebtAllocation = Math.max(0, maxDebtAllocation - debtUsedThisRound)
+  console.log('Debug - Debt mode check:', {
+    maxDebtAllocation,
+    availableDebtAllocation
+  })
+  
   if (availableDebtAllocation > 0) {
+    console.log('Debug - Returning debt mode')
     return 'debt'
   }
 
+  console.log('Debug - Returning null (no mode available)')
   return null
 }
 
 // Calculate available debt allocation
-export function getAvailableDebtAllocation(gameState: GameState): number {
-  return gameState.monthlySalary / 2
+export function getAvailableDebtAllocation(gameState: GameState, debtUsedThisRound: number = 0): number {
+  // Since we're working with bi-weekly periods, the debt limit should be 1/4 of monthly salary per round
+  // This ensures that over two rounds (one month), the total debt limit is 1/2 of monthly salary
+  const maxDebtAllocation = gameState.monthlySalary / 4
+  return Math.max(0, maxDebtAllocation - debtUsedThisRound)
 } 
